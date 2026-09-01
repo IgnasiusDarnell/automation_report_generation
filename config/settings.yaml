@@ -1,0 +1,52 @@
+app:
+  name: "Reminder Project Bot"
+  timezone: "Asia/Jakarta"
+  environment: "local"
+
+reminder:
+  daily_hour: 16
+  daily_minute: 0
+  followup_hour: 8
+  followup_minute: 0
+  misfire_grace_seconds: 7200
+  coalesce: true
+
+report:
+  generate_day: 1
+  output_folder: "storage/output"
+  pdf_preview: true
+  docx_final: true
+  file_name_pattern: "Laporan Bulanan {month_name} - {display_name}.docx"
+
+bast:
+  date_rule: "next_month_first_day"
+  signer_name: "Yulia Rochmawati, S.E., M.Si."
+  signer_title: "Pejabat Pembuat Komitmen"
+  signer_nip: "198307242010122001"
+
+libur:
+  auto_weekend: true
+  auto_holiday: true
+  holiday_country: "ID"
+  allow_override: true
+
+ai:
+  model: "minmaxm3"
+  temperature: 0.2
+  max_output_tokens: 1024
+  fallback_to_manual: true
+
+image:
+  max_images_per_month: 12
+  layout: "auto"
+  telegram_upload: true
+  file_name_pattern: "{date}_{seq}.jpg"
+
+numbering:
+  mode: "continuous_month"
+
+maintenance:
+  backup_folder: "storage/backups"
+  log_file: "logs/app.log"
+  log_max_bytes: 5242880
+  log_backup_count: 5

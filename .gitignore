@@ -1,0 +1,25 @@
+# Secrets
+.env
+config/secrets.yaml
+credentials/*.json
+
+# Local storage
+storage/
+logs/
+backups/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.venv/
+venv/
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db

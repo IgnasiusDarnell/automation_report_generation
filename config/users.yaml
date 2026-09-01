@@ -1,0 +1,67 @@
+users:
+  - id: darnell
+    display_name: "Darnell Ignasius"
+    full_name: "Darnell Ignasius, S.Kom."
+    name_upper: "DARNELL IGNASIUS"
+    role: "Tenaga Web Master KOMPU"
+    placement: "KOMPU"
+    area: "Politeknik Pekerjaan Umum"
+    telegram_chat_id: null
+    drive_folder_name: "Darnell"
+    template: "templates/darnell.docx"
+    categories:
+      - Website
+      - Rapat
+      - Dokumentasi
+      - Dokumen
+      - Daftar Ulang Mahasiswa
+      - Seminar Internasional
+      - Sidang Senat
+
+  - id: ihza
+    display_name: "Ihza"
+    full_name: "Ihza"
+    name_upper: "IHZA"
+    role: "Publikasi KOMPU"
+    placement: "KOMPU"
+    area: "Politeknik Pekerjaan Umum"
+    telegram_chat_id: null
+    drive_folder_name: "Ihza"
+    template: "templates/ihza.docx"
+    categories:
+      - Publikasi
+      - Dokumentasi
+      - Rapat
+      - Dokumen
+
+  - id: hendri
+    display_name: "Hendri"
+    full_name: "Hendri"
+    name_upper: "HENDRI"
+    role: "Designer KOMPU"
+    placement: "KOMPU"
+    area: "Politeknik Pekerjaan Umum"
+    telegram_chat_id: null
+    drive_folder_name: "Hendri"
+    template: "templates/hendri.docx"
+    categories:
+      - Desain
+      - Dokumentasi
+      - Rapat
+      - Dokumen
+
+  - id: ade
+    display_name: "Ade"
+    full_name: "Ade"
+    name_upper: "ADE"
+    role: "Designer KOMPU"
+    placement: "KOMPU"
+    area: "Politeknik Pekerjaan Umum"
+    telegram_chat_id: null
+    drive_folder_name: "Ade"
+    template: "templates/ade.docx"
+    categories:
+      - Desain
+      - Dokumentasi
+      - Rapat
+      - Dokumen
