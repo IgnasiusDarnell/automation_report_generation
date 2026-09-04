@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+{% block title %}{% if mode == 'new' %}Tambah{% else %}Edit{% endif %} User &middot; KOMPU Admin{% endblock %}
+{% block content %}
+<h3 class="mb-3">
+  <i class="bi bi-person{% if mode == 'new' %}-plus{% else %}-gear{% endif %}"></i>
+  {% if mode == 'new' %}Tambah User Baru{% else %}Edit User {{ user.user_id }}{% endif %}
+</h3>
+
+<div class="card stat-card">
+  <div class="card-body">
+    <form method="post">
+      <div class="row g-3">
+        <div class="col-md-4">
+          <label class="form-label">User ID <span class="text-danger">*</span></label>
+          <input type="text" class="form-control" name="user_id" value="{{ user.user_id or '' }}"
+                 {% if mode == 'edit' %}readonly{% endif %} required>
+          <div class="form-text">Slug unik, mis. <code>darnell</code></div>
+        </div>
+        <div class="col-md-4">
+          <label class="form-label">Display Name <span class="text-danger">*</span></label>
+          <input type="text" class="form-control" name="display_name" value="{{ user.display_name or '' }}" required>
+        </div>
+        <div class="col-md-4">
+          <label class="form-label">Nama Lengkap (dengan gelar)</label>
+          <input type="text" class="form-control" name="full_name" value="{{ user.full_name or '' }}">
+        </div>
+        <div class="col-md-4">
+          <label class="form-label">Nama Upper (untuk laporan)</label>
+          <input type="text" class="form-control" name="name_upper" value="{{ user.name_upper or '' }}">
+        </div>
+        <div class="col-md-4">
+          <label class="form-label">Telegram Chat ID</label>
+          <input type="text" class="form-control" name="telegram_chat_id" value="{{ user.telegram_chat_id or '' }}">
+          <div class="form-text">Minta user ketik <code>/whoami</code> ke Telegram untuk lihat ID.</div>
+        </div>
+        <div class="col-md-4">
+          <label class="form-label">Role</label>
+          <input type="text" class="form-control" name="role" value="{{ user.role or '' }}">
+        </div>
+        <div class="col-md-4">
+          <label class="form-label">Penempatan</label>
+          <input type="text" class="form-control" name="placement" value="{{ user.placement or 'KOMPU' }}">
+        </div>
+        <div class="col-md-4">
+          <label class="form-label">Area</label>
+          <input type="text" class="form-control" name="area" value="{{ user.area or 'Politeknik Pekerjaan Umum' }}">
+        </div>
+        <div class="col-md-4">
+          <label class="form-label">Template DOCX</label>
+          <input type="text" class="form-control" name="template" value="{{ user.template or 'templates/darnell.docx' }}">
+          <div class="form-text">Path relatif dari root project.</div>
+        </div>
+        <div class="col-12">
+          <label class="form-label">Kategori (pisahkan dengan koma)</label>
+          <input type="text" class="form-control" name="categories"
+                 value="{{ user.categories_str if user.categories_str else (user.categories | join(', ') if user.categories else '') }}"
+                 placeholder="Website, Rapat, Dokumentasi">
+        </div>
+        <div class="col-12">
+          <div class="form-check form-switch">
+            <input class="form-check-input" type="checkbox" name="active" id="activeSwitch" {% if user.active is not defined or user.active %}checked{% endif %}>
+            <label class="form-check-label" for="activeSwitch">User Aktif</label>
+          </div>
+        </div>
+      </div>
+      <hr>
+      <div class="d-flex gap-2">
+        <button type="submit" class="btn btn-primary">
+          <i class="bi bi-save"></i> Simpan
+        </button>
+        <a class="btn btn-outline-secondary" href="{{ url_for('users_list') }}">Batal</a>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

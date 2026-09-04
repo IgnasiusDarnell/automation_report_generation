@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block title %}Edit Log {{ log.date }} &middot; KOMPU Admin{% endblock %}
+{% block content %}
+<h3 class="mb-3"><i class="bi bi-pencil-square"></i> Edit Log <code>{{ log.date }}</code> &middot; {{ log.user_id }}</h3>
+
+<div class="card stat-card">
+  <div class="card-body">
+    <form method="post">
+      <div class="row g-3">
+        <div class="col-md-3">
+          <label class="form-label">Tanggal</label>
+          <input type="text" class="form-control" value="{{ log.date }}" readonly>
+        </div>
+        <div class="col-md-5">
+          <label class="form-label">Kategori</label>
+          <input type="text" class="form-control" name="category" value="{{ log.category or '' }}">
+        </div>
+        <div class="col-md-4">
+          <label class="form-label">Status</label>
+          <select class="form-select" name="status">
+            {% for opt in ['APPROVED', 'DRAFT', 'REJECTED'] %}
+              <option value="{{ opt }}" {% if (log.status or 'APPROVED')|upper == opt %}selected{% endif %}>{{ opt }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="col-12">
+          <label class="form-label">Raw Text (input user)</label>
+          <textarea class="form-control" name="raw_text" rows="3">{{ log.raw_text or '' }}</textarea>
+        </div>
+        <div class="col-12">
+          <label class="form-label">Final Text (hasil AI / versi rapi)</label>
+          <textarea class="form-control" name="final_text" rows="6">{{ log.final_text or '' }}</textarea>
+        </div>
+      </div>
+      <hr>
+      <div class="d-flex gap-2">
+        <button type="submit" class="btn btn-primary"><i class="bi bi-save"></i> Simpan</button>
+        <a class="btn btn-outline-secondary" href="{{ url_for('users_detail', user_id=log.user_id, year_month=log.year_month) }}">Batal</a>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

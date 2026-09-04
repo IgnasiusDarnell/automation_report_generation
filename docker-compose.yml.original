@@ -1,0 +1,30 @@
+services:
+  app:
+    build: .
+    container_name: reminder_project_bot
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      TZ: Asia/Jakarta
+    volumes:
+      - ./config:/app/config
+      - ./credentials:/app/credentials
+      - ./templates:/app/templates
+      - ./storage:/app/storage
+      - ./logs:/app/logs
+      - ./src:/app/src
+      - ./scripts:/app/scripts
+    command: python -m src.main
+    healthcheck:
+      test: [ "CMD", "python", "-m", "src.healthcheck" ]
+      interval: 5m
+      timeout: 30s
+      retries: 3
+      start_period: 20s
+    networks:
+      - backend
+
+networks:
+  backend:
+    external: true

@@ -6,17 +6,14 @@ users:
     role: "Tenaga Web Master KOMPU"
     placement: "KOMPU"
     area: "Politeknik Pekerjaan Umum"
-    telegram_chat_id: null
+    telegram_chat_id: "1139301111"
     drive_folder_name: "Darnell"
     template: "templates/darnell.docx"
     categories:
       - Website
       - Rapat
       - Dokumentasi
-      - Dokumen
-      - Daftar Ulang Mahasiswa
-      - Seminar Internasional
-      - Sidang Senat
+      - Dokumentasi
 
   - id: ihza
     display_name: "Ihza"

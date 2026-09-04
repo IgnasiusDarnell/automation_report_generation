@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}Login &middot; KOMPU Admin{% endblock %}
+{% block content %}
+<div class="row justify-content-center" style="margin-top: 5vh;">
+  <div class="col-md-5 col-lg-4">
+    <div class="card stat-card">
+      <div class="card-body p-4">
+        <h4 class="mb-3 text-center"><i class="bi bi-shield-lock"></i> Admin Login</h4>
+        <p class="text-muted text-center small mb-4">KOMPU Report Automation &middot; Web GUI</p>
+        <form method="post">
+          <div class="mb-3">
+            <label class="form-label">Username</label>
+            <input type="text" class="form-control" name="username" autofocus required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Password</label>
+            <input type="password" class="form-control" name="password" required>
+          </div>
+          <button type="submit" class="btn btn-primary w-100"><i class="bi bi-box-arrow-in-right"></i> Login</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

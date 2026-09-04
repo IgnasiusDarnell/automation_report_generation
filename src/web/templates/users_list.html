@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block title %}Users &middot; KOMPU Admin{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h3 class="mb-0"><i class="bi bi-people"></i> Manajemen User</h3>
+  <a class="btn btn-primary" href="{{ url_for('users_new') }}"><i class="bi bi-person-plus"></i> Tambah User</a>
+</div>
+
+<div class="table-wrap">
+  <div class="table-responsive">
+    <table class="table table-hover align-middle">
+      <thead>
+        <tr>
+          <th>User ID</th><th>Nama</th><th>Chat ID</th><th>Role</th>
+          <th>Kategori</th><th class="text-center">Status</th><th class="text-end">Aksi</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for u in users %}
+        <tr>
+          <td><code>{{ u.user_id }}</code></td>
+          <td>{{ u.display_name or '-' }}<br><small class="text-muted">{{ u.full_name or '' }}</small></td>
+          <td>{% if u.telegram_chat_id %}<code>{{ u.telegram_chat_id }}</code>{% else %}<span class="text-muted">-</span>{% endif %}</td>
+          <td>{{ u.role or '-' }}</td>
+          <td>
+            {% for c in (u.categories or []) %}
+              <span class="badge badge-soft-info me-1">{{ c }}</span>
+            {% endfor %}
+          </td>
+          <td class="text-center">
+            {% if u.active %}<span class="badge badge-soft-success">Aktif</span>
+            {% else %}<span class="badge badge-soft-secondary">Non-aktif</span>{% endif %}
+          </td>
+          <td class="text-end">
+            <a class="btn btn-sm btn-outline-primary" href="{{ url_for('users_detail', user_id=u.user_id) }}"><i class="bi bi-eye"></i></a>
+            <a class="btn btn-sm btn-outline-secondary" href="{{ url_for('users_edit', user_id=u.user_id) }}"><i class="bi bi-pencil"></i></a>
+            <form method="post" action="{{ url_for('users_delete', user_id=u.user_id) }}" class="d-inline" onsubmit="return confirm('Hapus user {{ u.user_id }} beserta semua log & fotonya? Aksi ini tidak bisa dibatalkan.');">
+              <button class="btn btn-sm btn-outline-danger" type="submit"><i class="bi bi-trash"></i></button>
+            </form>
+          </td>
+        </tr>
+        {% else %}
+        <tr><td colspan="7" class="text-center text-muted py-4">Belum ada user.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

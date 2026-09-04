@@ -15,6 +15,7 @@ from apscheduler.triggers.cron import CronTrigger
 
 from src.bot.handlers import router as bot_router
 from src.db.mysql_db import MySQLDB
+from src.healthcheck import start_server_in_thread, set_scheduler
 from src.scheduler.jobs import (
     auto_libur_and_reminder,
     morning_followup,
@@ -58,6 +59,9 @@ async def main():
         logger.critical(f"Gagal koneksi Database: {e}")
         sys.exit(1)
 
+    # Start HTTP /health endpoint (for Uptime Kuma)
+    start_server_in_thread()
+
     # Setup Scheduler
     scheduler = AsyncIOScheduler(timezone=TZ)
     
@@ -95,6 +99,7 @@ async def main():
     dp["db"] = db
     
     scheduler.start()
+    set_scheduler(scheduler)
     logger.info("Scheduler aktif. Menunggu pesan masuk...")
     
     try:

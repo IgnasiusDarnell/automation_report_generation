@@ -1,0 +1,161 @@
+{% extends "base.html" %}
+{% block title %}{{ user.display_name }} &middot; KOMPU Admin{% endblock %}
+{% block content %}
+{% set has_generated_docx = request.args.get('generated_docx') %}
+{% set has_generated_pdf = request.args.get('generated_pdf') %}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h3 class="mb-0">
+    <i class="bi bi-person-vcard"></i> {{ user.display_name }}
+    {% if user.active %}<span class="badge badge-soft-success">Aktif</span>
+    {% else %}<span class="badge badge-soft-secondary">Non-aktif</span>{% endif %}
+  </h3>
+  <div>
+    <a class="btn btn-outline-secondary" href="{{ url_for('users_list') }}"><i class="bi bi-arrow-left"></i> Kembali</a>
+    <a class="btn btn-outline-primary" href="{{ url_for('users_edit', user_id=user.user_id) }}"><i class="bi bi-pencil"></i> Edit</a>
+  </div>
+</div>
+
+<div class="row g-3 mb-4">
+  <div class="col-md-7">
+    <div class="card stat-card p-3">
+      <h6 class="text-muted">Profil</h6>
+      <table class="table table-sm mb-0">
+        <tr><th style="width: 30%;">User ID</th><td><code>{{ user.user_id }}</code></td></tr>
+        <tr><th>Display Name</th><td>{{ user.display_name or '-' }}</td></tr>
+        <tr><th>Nama Lengkap</th><td>{{ user.full_name or '-' }}</td></tr>
+        <tr><th>Nama Upper</th><td>{{ user.name_upper or '-' }}</td></tr>
+        <tr><th>Telegram Chat ID</th><td>
+          {% if user.telegram_chat_id %}<code>{{ user.telegram_chat_id }}</code>
+          {% else %}<span class="badge badge-soft-warning">Belum terdaftar</span>{% endif %}
+        </td></tr>
+        <tr><th>Role</th><td>{{ user.role or '-' }}</td></tr>
+        <tr><th>Penempatan</th><td>{{ user.placement or '-' }}</td></tr>
+        <tr><th>Area</th><td>{{ user.area or '-' }}</td></tr>
+        <tr><th>Template</th><td><code>{{ user.template or '-' }}</code></td></tr>
+        <tr><th>Kategori</th><td>
+          {% for c in (user.categories or []) %}
+            <span class="badge badge-soft-info me-1">{{ c }}</span>
+          {% endfor %}
+        </td></tr>
+      </table>
+    </div>
+  </div>
+  <div class="col-md-5">
+    <div class="card stat-card p-3">
+      <h6 class="text-muted">Statistik {{ year_month }}</h6>
+      <ul class="list-group list-group-flush">
+        <li class="list-group-item d-flex justify-content-between"><span>Total Log</span><strong>{{ stats.log_count }}</strong></li>
+        <li class="list-group-item d-flex justify-content-between"><span>Total Foto</span><strong>{{ stats.image_count }}</strong></li>
+        <li class="list-group-item">
+          <div>Per Kategori:</div>
+          {% if stats.by_category %}
+            {% for cat, n in stats.by_category.items() %}
+              <span class="badge badge-soft-info me-1">{{ cat }}: {{ n }}</span>
+            {% endfor %}
+          {% else %}<span class="text-muted small">-</span>{% endif %}
+        </li>
+        <li class="list-group-item">
+          <div>Per Status:</div>
+          {% if stats.by_status %}
+            {% for st, n in stats.by_status.items() %}
+              <span class="badge badge-soft-secondary me-1">{{ st }}: {{ n }}</span>
+            {% endfor %}
+          {% else %}<span class="text-muted small">-</span>{% endif %}
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="card stat-card p-3 mb-4">
+  <h6 class="mb-3"><i class="bi bi-file-earmark-word"></i> Generate / Download Laporan Bulanan</h6>
+  <form method="post" action="{{ url_for('users_regenerate', user_id=user.user_id) }}" class="row g-2 align-items-end">
+    <div class="col-auto">
+      <label class="form-label small">Periode</label>
+      <input type="text" class="form-control form-control-sm" name="year_month" value="{{ year_month }}" placeholder="YYYY-MM" required>
+    </div>
+    <div class="col-auto">
+      <label class="form-label small">Format</label>
+      <select class="form-select form-select-sm" name="format">
+        <option value="both" selected>DOCX + PDF</option>
+        <option value="docx">DOCX saja</option>
+        <option value="pdf">PDF saja</option>
+      </select>
+    </div>
+    <div class="col-auto">
+      <button class="btn btn-sm btn-primary" type="submit"><i class="bi bi-arrow-repeat"></i> Generate</button>
+    </div>
+    {% if has_generated_docx %}
+      <div class="col-12 mt-2">
+        <span class="text-success small">Selesai. Download:</span>
+        <a class="btn btn-sm btn-outline-success ms-2" href="{{ url_for('download', filename=year_month + '/' + has_generated_docx) }}"><i class="bi bi-file-earmark-word"></i> DOCX</a>
+        {% if has_generated_pdf %}
+          <a class="btn btn-sm btn-outline-danger" href="{{ url_for('download', filename=year_month + '/' + has_generated_pdf) }}"><i class="bi bi-file-earmark-pdf"></i> PDF</a>
+        {% endif %}
+      </div>
+    {% endif %}
+  </form>
+</div>
+
+<div class="table-wrap mb-4">
+  <h5 class="mb-3"><i class="bi bi-journal-text"></i> Log Harian ({{ year_month }})</h5>
+  <div class="table-responsive">
+    <table class="table table-hover align-middle">
+      <thead>
+        <tr>
+          <th>Tanggal</th><th>Kategori</th><th>Status</th>
+          <th>Raw Text</th><th>Final Text (AI)</th>
+          <th class="text-end">Aksi</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for l in logs|sort(attribute='date') %}
+        <tr>
+          <td><code>{{ l.date }}</code></td>
+          <td><span class="badge badge-soft-info">{{ l.category or '-' }}</span></td>
+          <td>
+            {% set st = (l.status or '') |upper %}
+            {% if st == 'APPROVED' %}<span class="badge badge-soft-success">APPROVED</span>
+            {% elif st == 'DRAFT' %}<span class="badge badge-soft-warning">DRAFT</span>
+            {% else %}<span class="badge badge-soft-secondary">{{ st or '-' }}</span>{% endif %}
+          </td>
+          <td><small>{{ (l.raw_text or '')[:80] }}{% if (l.raw_text or '')|length > 80 %}…{% endif %}</small></td>
+          <td><small>{{ (l.final_text or '')[:80] }}{% if (l.final_text or '')|length > 80 %}…{% endif %}</small></td>
+          <td class="text-end">
+            <a class="btn btn-sm btn-outline-primary" href="{{ url_for('logs_edit', log_id=l.log_id) }}"><i class="bi bi-pencil"></i></a>
+            <form method="post" action="{{ url_for('logs_delete', log_id=l.log_id) }}" class="d-inline"
+                  onsubmit="return confirm('Hapus log tanggal {{ l.date }}?');">
+              <button class="btn btn-sm btn-outline-danger" type="submit"><i class="bi bi-trash"></i></button>
+            </form>
+          </td>
+        </tr>
+        {% else %}
+        <tr><td colspan="6" class="text-center text-muted py-4">Belum ada log untuk {{ year_month }}.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="table-wrap">
+  <h5 class="mb-3"><i class="bi bi-images"></i> Foto Dokumentasi ({{ year_month }})</h5>
+  {% if images %}
+    <div class="row g-2">
+      {% for img in images %}
+      <div class="col-md-3 col-sm-4 col-6">
+        <div class="card">
+          <div class="card-body p-2">
+            <div class="small text-muted mb-1"><i class="bi bi-calendar3"></i> {{ img.date }}</div>
+            <code class="small d-block text-truncate" title="{{ img.local_path }}">{{ img.image_id }}.jpg</code>
+            <div class="small text-muted mt-1">Size: {{ img.telegram_file_id[:10] }}…</div>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <p class="text-muted text-center mb-0">Belum ada foto untuk {{ year_month }}.</p>
+  {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+{% block title %}Dashboard &middot; KOMPU Admin{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h3 class="mb-0"><i class="bi bi-speedometer2"></i> Dashboard</h3>
+  <span class="badge text-bg-secondary">Periode: {{ year_month }}</span>
+</div>
+
+<div class="row g-3 mb-4">
+  {% set total_users = users|length %}
+  {% set active_users = users|selectattr('active')|list|length %}
+  {% set total_logs = users|sum(attribute='stats.log_count') %}
+  {% set total_imgs = users|sum(attribute='stats.image_count') %}
+  <div class="col-md-3"><div class="card stat-card p-3">
+    <div class="small text-muted">Total User</div><div class="h4 mb-0">{{ total_users }}</div>
+  </div></div>
+  <div class="col-md-3"><div class="card stat-card p-3">
+    <div class="small text-muted">User Aktif</div><div class="h4 mb-0 text-success">{{ active_users }}</div>
+  </div></div>
+  <div class="col-md-3"><div class="card stat-card p-3">
+    <div class="small text-muted">Log {{ year_month }}</div><div class="h4 mb-0">{{ total_logs }}</div>
+  </div></div>
+  <div class="col-md-3"><div class="card stat-card p-3">
+    <div class="small text-muted">Foto {{ year_month }}</div><div class="h4 mb-0">{{ total_imgs }}</div>
+  </div></div>
+</div>
+
+<div class="table-wrap">
+  <h5 class="mb-3"><i class="bi bi-people"></i> Daftar User</h5>
+  <div class="table-responsive">
+    <table class="table table-hover align-middle">
+      <thead>
+        <tr>
+          <th>#</th><th>User ID</th><th>Nama</th><th>Telegram Chat ID</th>
+          <th>Role</th><th class="text-center">Status</th>
+          <th class="text-center">Log {{ year_month }}</th>
+          <th class="text-center">Foto</th>
+          <th class="text-end">Aksi</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for u in users %}
+        <tr>
+          <td>{{ loop.index }}</td>
+          <td><code>{{ u.user_id }}</code></td>
+          <td>{{ u.display_name or '-' }}</td>
+          <td>
+            {% if u.telegram_chat_id %}
+              <code>{{ u.telegram_chat_id }}</code>
+            {% else %}
+              <span class="badge badge-soft-warning">Belum terdaftar</span>
+            {% endif %}
+          </td>
+          <td>{{ u.role or '-' }}</td>
+          <td class="text-center">
+            {% if u.active %}
+              <span class="badge badge-soft-success">Aktif</span>
+            {% else %}
+              <span class="badge badge-soft-secondary">Non-aktif</span>
+            {% endif %}
+          </td>
+          <td class="text-center">{{ u.stats.log_count }}</td>
+          <td class="text-center">{{ u.stats.image_count }}</td>
+          <td class="text-end">
+            <a class="btn btn-sm btn-outline-primary" href="{{ url_for('users_detail', user_id=u.user_id) }}">
+              <i class="bi bi-eye"></i> Detail
+            </a>
+            <a class="btn btn-sm btn-outline-secondary" href="{{ url_for('users_edit', user_id=u.user_id) }}">
+              <i class="bi bi-pencil"></i> Edit
+            </a>
+          </td>
+        </tr>
+        {% else %}
+        <tr><td colspan="9" class="text-center text-muted py-4">Belum ada user.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}
